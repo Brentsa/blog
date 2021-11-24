@@ -17,6 +17,18 @@ Route::get('/', function () {
     return view('posts');
 });
 
-Route::get('/post', function () {
-    return view('post');
-});
+//wild care route to load dynamic content via $slug
+Route::get('/posts/{post}', function ($slug) {
+
+    //check if the file exists and redirect the user to the homepage if not
+    if(!file_exists($path = __DIR__ . "/../resources/posts/{$slug}.html")) {
+        return redirect('/');
+    }
+
+    //cache the result of file_get_get contents for a set amount of time and store in post
+    $post = cache()->remember("posts.{$slug}", now()->addHour(1), fn() => file_get_contents($path));
+
+    //return view with the variable post set
+    return view('post', ['post' => $post]);
+
+})->where('post', '[A-z_\-]+');
