@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Post;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,15 +21,9 @@ Route::get('/', function () {
 //wild care route to load dynamic content via $slug
 Route::get('/posts/{post}', function ($slug) {
 
-    //check if the file exists and redirect the user to the homepage if not
-    if(!file_exists($path = __DIR__ . "/../resources/posts/{$slug}.html")) {
-        return redirect('/');
-    }
-
-    //cache the result of file_get_get contents for a set amount of time and store in post
-    $post = cache()->remember("posts.{$slug}", now()->addHour(1), fn() => file_get_contents($path));
-
-    //return view with the variable post set
-    return view('post', ['post' => $post]);
-
+    //Find a post by its slug and pass it into a view called "post"
+    return view('post', [
+        'post' => Post::find($slug)
+    ]);
+    
 })->where('post', '[A-z_\-]+');
