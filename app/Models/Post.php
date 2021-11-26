@@ -3,15 +3,39 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\File;
+use Spatie\YamlFrontMatter\YamlFrontMatter;
 
 class Post{
-    public static function find($slug){
-        //check if the file exists and redirect the user to the homepage if not
-        if(!file_exists($path = resource_path("/posts/${slug}.html"))) {
-            throw new ModelNotFoundException();
-        }
 
-        //cache the result of file_get_get contents for a set amount of time and store in post
-        return cache()->remember("posts.{$slug}", now()->addHour(1), fn() => file_get_contents($path));
+    public $title;
+    public $excerpt; 
+    public $date; 
+    public $body; 
+    public $slug;
+
+    public function __construct($title, $excerpt, $date, $body, $slug)
+    {
+        $this->title = $title;
+        $this->excerpt = $excerpt;
+        $this->date = $date;
+        $this->body = $body;
+        $this->slug = $slug;
+    }
+
+    //find a single post by it's unique slug
+    public static function find($slug)
+    {
+        //from all the blog posts, find and return the post with the matching slug
+        return static::all()->firstWhere("slug", $slug);
+    }
+
+    //find all stored post
+    public static function all()
+    {
+        //collect all files in the resources/posts folder, yaml parse them, then create a new post object array
+        return collect(File::allFiles(resource_path("posts"))) 
+            ->map(fn($file)=> YamlFrontMatter::parseFile($file))
+            ->map(fn($post)=> new Post($post->title, $post->excerpt, $post->date, $post->body(), $post->slug));
     }
 }

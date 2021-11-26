@@ -14,13 +14,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('posts');
+Route::get('/', function () 
+{
+    //pass an array of posts to the posts view
+    return view('posts', [
+        'posts' => Post::all()
+    ]);
 });
 
 //wild care route to load dynamic content via $slug
-Route::get('/posts/{post}', function ($slug) {
-
+Route::get('/posts/{post}', function ($slug) 
+{
     //Find a post by its slug and pass it into a view called "post"
     return view('post', [
         'post' => Post::find($slug)
