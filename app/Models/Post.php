@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Collection;
 use Spatie\YamlFrontMatter\YamlFrontMatter;
 
 class Post{
@@ -33,9 +34,12 @@ class Post{
     //find all stored post
     public static function all()
     {
-        //collect all files in the resources/posts folder, yaml parse them, then create a new post object array
-        return collect(File::allFiles(resource_path("posts"))) 
-            ->map(fn($file)=> YamlFrontMatter::parseFile($file))
-            ->map(fn($post)=> new Post($post->title, $post->excerpt, $post->date, $post->body(), $post->slug));
+        return cache()->rememberForever('posts.all', function(){
+            //collect all files in the resources/posts folder, yaml parse them, then create a new post object array
+            return collect(File::allFiles(resource_path("posts"))) 
+                ->map(fn($file)=> YamlFrontMatter::parseFile($file))
+                ->map(fn($post)=> new Post($post->title, $post->excerpt, $post->date, $post->body(), $post->slug))
+                ->sortByDesc("date");
+        });
     }
 }
