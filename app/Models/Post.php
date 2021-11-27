@@ -31,6 +31,20 @@ class Post{
         return static::all()->firstWhere("slug", $slug);
     }
 
+    //find a single post by slug and return an error if it is not found
+    public static function findOrFail($slug){
+        //from all the blog posts, find and return the post with the matching slug
+        $post = static::find($slug);
+
+        //throw an error if a post is not found
+        if(!$post){
+            throw new ModelNotFoundException();
+        }
+
+        //return the found post
+        return $post;
+    }
+
     //find all stored post
     public static function all()
     {
