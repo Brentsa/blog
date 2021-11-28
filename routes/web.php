@@ -22,11 +22,11 @@ Route::get('/', function ()
     ]);
 });
 
-//wild care route to load dynamic content via $slug
-Route::get('/posts/{post}', function ($id) 
+//wild care route to load dynamic content via Post model
+Route::get('/posts/{post:slug}', function (Post $post) 
 {
-    //Find a post by its slug and pass it into a view called "post"
+    //Find a post and pass it into a view called "post"
     return view('post', [
-        'post' => Post::findOrFail($id)
+        'post' => $post
     ]); 
 });
