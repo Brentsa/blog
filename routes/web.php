@@ -2,6 +2,7 @@
 
 use App\Models\Category;
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,8 +20,8 @@ Route::get('/', function ()
 {
     //pass an array of posts to the posts view
     return view('posts', [
-        //stops multiple SQL queries
-        'posts' => Post::with('category')->get()
+        //stops multiple SQL queries, solves the N+1 problem
+        'posts' => Post::latest('updated_at')->with(['category','author'])->get()
     ]);
 });
 
@@ -37,5 +38,12 @@ Route::get('/categories/{category:slug}', function (Category $category)
 {
     return view('categories', [
         'posts' => $category->posts
+    ]);
+});
+
+Route::get('/authors/{author:username}', function (User $author)
+{
+    return view('posts', [
+        'posts' => $author->posts
     ]);
 });
