@@ -18,9 +18,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () 
 {
-
-    //ddd(Post::latest('updated_at')->with(['category','author'])->get());
-
     //pass an array of posts to the posts view
     return view('posts', [
         //stops multiple SQL queries, solves the N+1 problem
