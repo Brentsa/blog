@@ -21,7 +21,8 @@ Route::get('/', function ()
     //pass an array of posts to the posts view
     return view('posts', [
         //stops multiple SQL queries, solves the N+1 problem
-        'posts' => Post::latest('updated_at')->with(['category','author'])->get()
+        'posts' => Post::latest('updated_at')->with(['category','author'])->get(),
+        'categories' => Category::All()
     ]);
 });
 
