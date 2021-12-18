@@ -12,7 +12,7 @@ class Post extends Model
     protected $guarded = [];
     //protected $fillable = ['title', 'excerpt', 'body'];
 
-    //automatically joins category and author when a post is searched
+    //automatically joins category and author when a post is searched, stops multiple SQL queries, solves the N+1 problem
     protected $with = ['category', 'author'];
 
     public function category()
@@ -25,5 +25,21 @@ class Post extends Model
     {
         //A post belongs to a User
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function scopeFilter($query, array $filters) //Post::newQuery()->filter()->get()
+    {
+        $query->when($filters['search'] ?? false, fn($query, $search) => 
+            $query
+            ->where('title', 'like', '%' . $search . '%')
+            ->orWhere('body', 'like', '%' . $search . '%')
+        );
+
+        //execute if there is a search parameter
+        // if(isset($filters['search'])){
+        //     $query
+        //     ->where('title', 'like', '%' . request('search') . '%')
+        //     ->orWhere('body', 'like', '%' . request('search') . '%');
+        // }
     }
 }

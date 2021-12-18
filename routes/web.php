@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PostController;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\User;
@@ -16,25 +17,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () 
-{
-    //pass an array of posts to the posts view
-    return view('posts', [
-        //stops multiple SQL queries, solves the N+1 problem
-        'posts' => Post::latest('updated_at')->with(['category','author'])->get(),
-        'categories' => Category::All()
-    ]);
-})->name('home');
+Route::get('/', [PostController::class, 'index'])->name('home');
 
-//wild care route to load dynamic content via Post model
-Route::get('/posts/{post:slug}', function (Post $post) 
-{
-    //Find a post and pass it into a view called "post"
-    return view('post', [
-        'post' => $post,
-        'categories' => Category::All()
-    ]); 
-});
+Route::get('/posts/{post:slug}', [PostController::class, 'show'])->name('post');
 
 Route::get('/categories/{category:slug}', function (Category $category)
 {
