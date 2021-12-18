@@ -24,7 +24,7 @@ Route::get('/', function ()
         'posts' => Post::latest('updated_at')->with(['category','author'])->get(),
         'categories' => Category::All()
     ]);
-});
+})->name('home');
 
 //wild care route to load dynamic content via Post model
 Route::get('/posts/{post:slug}', function (Post $post) 
