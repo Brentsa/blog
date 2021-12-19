@@ -35,6 +35,13 @@ class Post extends Model
             ->orWhere('body', 'like', '%' . $search . '%')
         );
 
+        $query->when($filters['category'] ?? false, fn($query, $category) => 
+            //give posts that have a category where the slug matches the filtered category
+            $query->whereHas('category', fn($query) => 
+                $query->where('slug', $category)
+            )
+        );
+
         //execute if there is a search parameter
         // if(isset($filters['search'])){
         //     $query
