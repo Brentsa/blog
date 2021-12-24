@@ -9,13 +9,16 @@
     </x-slot>
 
     <!-- Dropdown Items List -->
-    <x-dropdown-item href="/" :active="!request('category')">
+    <x-dropdown-item 
+        href="/?{{http_build_query(request()->except('category', 'page'))}}" 
+        :active="!request('category')"
+    >
         All
     </x-dropdown-item>
     @foreach ($categories as $category)
         <x-dropdown-item 
             {{-- take the request queries except category, and build them as a string --}}
-            href="/?category={{$category->slug}}&{{http_build_query(request()->except('category'))}}" 
+            href="/?category={{$category->slug}}&{{http_build_query(request()->except('category', 'page'))}}" 
             :active="isset($currentCategory) && $currentCategory->is($category)"
         >
             {{ucwords($category->name)}}

@@ -12,7 +12,9 @@ class PostController extends Controller
     {
         //pass an array of posts to the posts view
         return view('posts.index', [
-            'posts' => Post::latest()->filter(request(['search', 'category', 'author']))->get()
+            'posts' => Post::latest()->filter(
+                request(['search', 'category', 'author'])
+            )->paginate(6)->withQueryString()
         ]);
     }
 
