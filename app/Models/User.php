@@ -48,4 +48,14 @@ class User extends Authenticatable
         //A user has many posts
         return $this->hasMany(Post::class);
     }
+
+    //attribute mutator function that hashes password before saving to database
+    public function setPasswordAttribute($password){
+      return $this->attributes['password'] = bcrypt($password);  
+    }
+
+    // accessor that mutates a value when getting it from the user
+    // public function getUsernameAttribute($username){
+    //     return ucfirst($username);
+    // }
 }
