@@ -23,6 +23,12 @@ class RegisterController extends Controller
 
         User::create($attributes);
 
-        return redirect('/');
+        //Log the user in
+
+        // less concise version of the return statement below
+        // session()->flash('success', 'Account successfully created.');
+        // return redirect('/');
+
+        return redirect('/')->with('success', 'Account successfully created.');
     }
 }

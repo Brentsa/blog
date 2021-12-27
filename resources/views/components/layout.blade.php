@@ -53,5 +53,9 @@
                 </div>
             </div>
         </footer>
+
+        {{-- flash a success message on create an account --}}
+        <x-flash/>
+
     </section>
 </body>
