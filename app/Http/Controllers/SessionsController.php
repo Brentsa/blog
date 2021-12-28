@@ -20,18 +20,20 @@ class SessionsController extends Controller
         ]);
 
         //try to authenticate the user with the provided data
-        if(auth()->attempt($attributes)){
-            session()->regenerate();
-            //flash the success and redirect to home
-            return redirect('/')->with('success', 'Welcome Back!');
+        if(!auth()->attempt($attributes)){
+            //send the user back with errors if log in failed
+            throw ValidationException::withMessages(['email' => 'Provided credentials could not be verified.']);
         }
         
+        session()->regenerate();
+        
+        //flash the success and redirect to home
+        return redirect('/')->with('success', 'Welcome Back!');
+
         //send the user back with errors if log in failed
         // return back()
         //     ->withInput()
         //     ->withErrors(['email' => 'Provided credentials could not be verified.']);
-
-        throw ValidationException::withMessages(['email' => 'Provided credentials could not be verified.']);
     }
 
     public function destroy()
