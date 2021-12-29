@@ -9,7 +9,7 @@ class Post extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    //protected $guarded = [];
     //protected $fillable = ['title', 'excerpt', 'body'];
 
     //automatically joins category and author when a post is searched, stops multiple SQL queries, solves the N+1 problem
