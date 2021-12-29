@@ -9,6 +9,27 @@ use App\Models\Post;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
+//Route to test mailchimp functionality
+Route::get('/ping', function (){
+    $mailchimp = new \MailchimpMarketing\ApiClient();
+
+    $mailchimp->setConfig([
+        'apiKey' => config('services.mailchimp.key'),
+        'server' => 'us20'
+    ]);
+
+    // Add a member to the list 
+    // $response = $mailchimp->lists->addListMember("83b97a4c49",[
+    //     'email_address' => 'seanbrent5@gmail.com',
+    //     'status' => 'subscribed'
+    // ]);
+
+    // Get the list info
+    $response = $mailchimp->lists->getListMembersInfo("83b97a4c49");
+
+    dd($response);
+});
+
 Route::get('/', [PostController::class, 'index'])->name('home');
 
 //Load the main page with blog posts
