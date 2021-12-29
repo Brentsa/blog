@@ -21,10 +21,16 @@ class Post extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function author()
+    public function author() //looks for author_id, must specify column
     {
         //A post belongs to a User
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function comments()
+    {
+        //A post has many comments
+        return $this->hasMany(Comment::class);
     }
 
     public function scopeFilter($query, array $filters) //Post::newQuery()->filter()->get()
