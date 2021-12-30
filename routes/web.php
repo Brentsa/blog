@@ -1,46 +1,18 @@
 <?php
 
+use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\PostCommentsController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SessionsController;
-use App\Models\Category;
-use App\Models\Post;
-use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
-//Route to test mailchimp functionality
-Route::post('/newsletter', function (){
 
-    request()->validate([ 'email' => ['required', 'email']]);
-
-    $mailchimp = new \MailchimpMarketing\ApiClient();
-
-    $mailchimp->setConfig([
-        'apiKey' => config('services.mailchimp.key'),
-        'server' => 'us20'
-    ]);
-
-    try{
-        // Add a member to the list 
-        $response = $mailchimp->lists->addListMember("83b97a4c49",[
-            'email_address' => request('email'),
-            'status' => 'subscribed'
-        ]);
-    }
-    catch(Exception $e){
-        throw Illuminate\Validation\ValidationException::withMessages([
-            'email' => 'This email could not be added to our newsletter.'
-        ]);
-    }
-    
-    // Get the list info
-    //$response = $mailchimp->lists->getListMembersInfo("83b97a4c49");
-
-    return redirect('/')->with('success', 'You have successfully subscribed.');
-});
-
+//Home route
 Route::get('/', [PostController::class, 'index'])->name('home');
+
+//Route to test mailchimp functionality, laravel will instantiate a newsletter
+Route::post('/newsletter', NewsletterController::class);
 
 //Load the main page with blog posts
 Route::get('/posts/{post:slug}', [PostController::class, 'show'])->name('post');
