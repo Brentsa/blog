@@ -16,11 +16,12 @@ class CreatePostsTable extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('category_id')->constrained();
+            $table->foreignId('category_id')->constrained()->cascadeOnDelete();
             $table->string("slug")->unique();
             $table->string("title");
             $table->text("excerpt");
             $table->text("body");
+            $table->text("thumbnail")->nullable();
             $table->timestamps();
             $table->timestamp('published_at')->nullable();
         });
