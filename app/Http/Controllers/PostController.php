@@ -3,8 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
-use App\Models\Category;
-use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class PostController extends Controller
 {
@@ -29,6 +28,23 @@ class PostController extends Controller
     public function create()
     {
         return view('posts.create');
+    }
+
+    public function store()
+    {
+        $attributes = request()->validate([
+            'title' => 'required',
+            'slug' => ['required', Rule::unique('posts', 'slug')],
+            'category_id' => ['required', Rule::exists('categories', 'id')],
+            'excerpt' => 'required',
+            'body' => 'required'
+        ]);
+
+        $attributes['user_id'] = auth()->id();
+
+        Post::create($attributes);
+
+        return redirect('/');
     }
 
     // 7 restful actions index, show, create, store, edit, update, destroy

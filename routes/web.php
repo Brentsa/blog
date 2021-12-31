@@ -7,6 +7,7 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SessionsController;
 use Illuminate\Support\Facades\Route;
 
+//Standard Routes------------------------------------------
 
 //Home route
 Route::get('/', [PostController::class, 'index'])->name('home');
@@ -31,5 +32,9 @@ Route::post('/session', [SessionsController::class, 'store'])->middleware('guest
 //Route to log the user out and destroy the session
 Route::post('/logout', [SessionsController::class, 'destroy'])->middleware('auth');
 
-//Admin Routes
+
+//Admin Routes------------------------------------------
+
+//create a post route
 Route::get('/admin/posts/create', [PostController::class, 'create'])->middleware('admin');
+Route::post('/admin/posts', [PostController::class, 'store'])->middleware('admin');
