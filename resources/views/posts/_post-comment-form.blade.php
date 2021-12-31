@@ -19,13 +19,11 @@
                     required
                 ></textarea>
 
-                @error('body')
-                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                @enderror
+                <x-form.error name="body"/>
             </div>
 
             <div class="flex justify-end border-t border-gray-200 pt-6">
-                <x-submit-button>Post</x-submit-button>
+                <x-form.button>Post</x-form.button>
             </div>
         </form>
     </x-panel>
