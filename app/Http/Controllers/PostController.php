@@ -3,11 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use Illuminate\Support\Facades\Gate;
 
 class PostController extends Controller
 {
     public function index()
     {
+        //dd(Gate::allows('admin'));
+        //dd(request()->user()->can('admin'));
+        //$this->authorize('admin');
+
         //pass an array of posts to the posts view
         return view('posts.index', [
             'posts' => Post::latest()->filter(

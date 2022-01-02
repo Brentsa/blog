@@ -34,18 +34,23 @@ Route::post('/session', [SessionsController::class, 'store'])->middleware('guest
 Route::post('/logout', [SessionsController::class, 'destroy'])->middleware('auth');
 
 
+
 //Admin Routes------------------------------------------
+Route::middleware('can:admin')->group(function(){
+    //Define all 7 types of routes for posts in a single line
+    //Route::resource('/admin/posts', AdminPostController::class)->except('show');
 
-//Admin dashboard page
-Route::get('/admin/posts', [AdminPostController::class, 'index'])->middleware('admin');
+    //Admin dashboard page
+    Route::get('/admin/posts', [AdminPostController::class, 'index']);
 
-//Create a post route
-Route::get('/admin/posts/create', [AdminPostController::class, 'create'])->middleware('admin');
-Route::post('/admin/posts', [AdminPostController::class, 'store'])->middleware('admin');
+    //Create a post route
+    Route::get('/admin/posts/create', [AdminPostController::class, 'create']);
+    Route::post('/admin/posts', [AdminPostController::class, 'store']);
 
-//Edit a post route
-Route::get('/admin/posts/{post}/edit', [AdminPostController::class, 'edit'])->middleware('admin');
-Route::patch('/admin/posts/{post}', [AdminPostController::class, 'update'])->middleware('admin');
+    //Edit a post route
+    Route::get('/admin/posts/{post}/edit', [AdminPostController::class, 'edit']);
+    Route::patch('/admin/posts/{post}', [AdminPostController::class, 'update']);
 
-//Delete a post route
-Route::delete('/admin/posts/{post}', [AdminPostController::class, 'destroy'])->middleware('admin');
+    //Delete a post route
+    Route::delete('/admin/posts/{post}', [AdminPostController::class, 'destroy']);
+});
