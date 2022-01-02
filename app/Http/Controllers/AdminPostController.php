@@ -10,7 +10,7 @@ class AdminPostController extends Controller
     public function index()
     {
         return view('admin.posts.index', [
-            'posts' => Post::all()->where('user_id', auth()->id())
+            'posts' => Post::where('user_id', auth()->id())->orderByDesc('created_at')->get()
         ]);
     }
 
@@ -66,5 +66,11 @@ class AdminPostController extends Controller
         $post->update($attributes);
 
         return back()->with('success', 'Post has been successfully updated.');
+    }
+
+    public function destroy(Post $post){
+        $post->delete();
+
+        return back()->with('success', 'Post has been successfully deleted.');
     }
 }
