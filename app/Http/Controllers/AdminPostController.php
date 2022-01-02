@@ -21,14 +21,8 @@ class AdminPostController extends Controller
 
     public function store()
     {
-        $attributes = request()->validate([
-            'title' => 'required',
-            'slug' => ['required', Rule::unique('posts', 'slug')],
-            'thumbnail' => ['required', 'image'],
-            'category_id' => ['required', Rule::exists('categories', 'id')],
-            'excerpt' => 'required',
-            'body' => 'required'
-        ]);
+        //validate the request and save the field data
+        $attributes = $this->validatePost();
 
         //set the user_id to the current user
         $attributes['user_id'] = auth()->id();
@@ -38,7 +32,7 @@ class AdminPostController extends Controller
 
         Post::create($attributes);
 
-        return redirect('/');
+        return redirect('/')->with('success', 'Post has been published!');
     }
 
     public function edit(Post $post)
@@ -50,19 +44,15 @@ class AdminPostController extends Controller
 
     public function update(Post $post)
     {
-        $attributes = request()->validate([
-            'title' => 'required',
-            'slug' => ['required', Rule::unique('posts', 'slug')->ignore($post->id)],
-            'thumbnail' => 'image',
-            'category_id' => ['required', Rule::exists('categories', 'id')],
-            'excerpt' => 'required',
-            'body' => 'required'
-        ]);
+        //validate the request and save the field data
+        $attributes = $this->validatePost($post);
 
-        if(isset($attributes['thumbnail'])){
+        //properly update the thumbnail path and store it if a new one was entered
+        if($attributes['thumbnail'] ?? false){
             $attributes['thumbnail'] = request()->file('thumbnail')->store('thumbnails');
         }
 
+        //update the post
         $post->update($attributes);
 
         return back()->with('success', 'Post has been successfully updated.');
@@ -72,5 +62,16 @@ class AdminPostController extends Controller
         $post->delete();
 
         return back()->with('success', 'Post has been successfully deleted.');
+    }
+
+    protected function validatePost(Post $post = new Post()):array{
+        return request()->validate([
+            'title' => 'required',
+            'slug' => ['required', Rule::unique('posts', 'slug')->ignore($post)],
+            'thumbnail' => $post->exists() ? ['image'] : ['required', 'image'],
+            'category_id' => ['required', Rule::exists('categories', 'id')],
+            'excerpt' => 'required',
+            'body' => 'required'
+        ]);
     }
 }
